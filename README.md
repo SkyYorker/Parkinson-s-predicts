@@ -11,8 +11,8 @@
 1.  **Клонируйте репозиторий:**
 
     ```
-    git clone <[ссылка_на_ваш_репозиторий](https://github.com/SkyYorker/Parkinson-s-predicts)>
-    cd <Parkinson-s-predicts>
+    git clone https://github.com/SkyYorker/Parkinson-s-predicts
+    cd Parkinson-s-predicts
     ```
 
 2.  **Создайте и активируйте виртуальное окружение (рекомендуется):**
