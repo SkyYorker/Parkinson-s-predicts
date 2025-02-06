@@ -64,7 +64,7 @@ plt.title('Гистограмма распределения MDVP:Fo(Hz)')
 plt.show()
 
 # График плотности
-sns.kdeplot(df['MDVP:Jitter(%)'], shade=True)
+sns.kdeplot(df['MDVP:Jitter(%)'], fill=True)
 plt.title('График плотности MDVP:Jitter(%)')
 plt.show()
 
