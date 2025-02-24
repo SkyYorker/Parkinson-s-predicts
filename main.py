@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 
@@ -14,34 +15,42 @@ df = pd.read_csv('parkinsons.data')
 
 
 # Подготовка данных
-all_features=df.loc[:,df.columns!='status'].values[:,1:] 
-out_come=df.loc[:,'status'].values
+all_features = df.loc[:, df.columns != 'status'].values[:, 1:]
+out_come = df.loc[:, 'status'].values
 
 
-scaler=MinMaxScaler((-1,1))
-X=scaler.fit_transform(all_features)
-y=out_come
 
-# Разделение данных 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1, stratify=y)
+# Разделение данных
+X_train, X_test, y_train, y_test = train_test_split(all_features, out_come, test_size=0.2, random_state=1, stratify=out_come)
 
 
-# Гиперпараметры Модели 
-param = {
-    'max_depth': 3, # Максимальная глубина деревьев
-    'learning_rate': 0.4, # Скорость обучения
-    'n_estimators': 200 # Количество деревьев
+# Масштабирование данных
+scaler = MinMaxScaler((-1, 1))
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Гиперпараметры модели
+param_grid = {
+    'max_depth': 50,
+    'learning_rate': 0.05,
+    'n_estimators': 5000,
+    'reg_alpha': 0.1,
+    'reg_lambda': 0,
+    'subsample': 0.8,
+    'colsample_bytree': 0.7,
+    'gamma': 0.1,
 }
 
+# Обучение модели XGBoost с GridSearchCV
+xgb_clf = xgb.XGBClassifier(**param_grid)
 
-# Обучение модели
-xgb_clf = xgb.XGBClassifier(**param)
-xgb_clf = xgb_clf.fit(X_train, y_train)
+xgb_clf.fit(X_train, y_train)
+
 
 
 # Вывод результатов
-print('Точность классификатора XGBoost на обучающих данных составляет : {:.2f}'.format(xgb_clf.score(X_train, y_train)*100))
-print('Точность классификатора XGBoost на тестовых данных составляет : {:.2f}'.format(xgb_clf.score(X_test, y_test)*100))
+print('Точность классификатора XGBoost на обучающих данных: {:.2f}'.format(xgb_clf.score(X_train, y_train) * 100))
+print('Точность классификатора XGBoost на тестовых данных: {:.2f}'.format(xgb_clf.score(X_test, y_test) * 100))
 
 
 # Графики
@@ -64,7 +73,7 @@ plt.title('Гистограмма распределения MDVP:Fo(Hz)')
 plt.show()
 
 # График плотности
-sns.kdeplot(df['MDVP:Jitter(%)'], fill=True)
+sns.kdeplot(df['MDVP:Jitter(%)'], shade=True)
 plt.title('График плотности MDVP:Jitter(%)')
 plt.show()
 
